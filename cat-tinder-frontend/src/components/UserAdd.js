@@ -53,7 +53,7 @@ class UserAdd extends Component {
           </div>
           <div className='formGroup'>
             <label htmlFor='password'>Password</label>
-            <input type='text' name='password' id='password' value={this.state.user.password} onChange={this.handleChange.bind(this)}>
+            <input type='password' name='password' id='password' value={this.state.user.password} onChange={this.handleChange.bind(this)}>
             </input>
           </div>
           <div className='formGroup'>
