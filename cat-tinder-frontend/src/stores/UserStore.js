@@ -1,60 +1,47 @@
+
 import {EventEmitter} from 'events'
 import Dispatcher from '../Dispatcher'
 
 class UserStore extends EventEmitter{
   constructor(){
     super()
-    this.users = []
-    this.newUser = null
+    this.user = null
     this.message = ""
   }
 
   getUser(){
-    return this.users
-  }
-
-  getNewUser(){
-    return this.newUser
-  }
-
-  updateNewUser(attributes){
-    this.newUser = attributes
-    this.users.push(attributes)
-    this.updateUserMessage('User has been added')
-    this.emit('change')
+    return this.user
   }
 
   updateUser(attributes){
-    this.users = attributes
-    this.updateMessage('Users are loaded')
-    this.emit('change')
+    this.user = attributes
   }
 
   getMessage(){
     return this.message
   }
 
-  updateUserMessage(newMessage){
-    this.message = newMessage
-    this.emit('message')
-  }
-
   handleActions(action){
     switch(action.type){
       case("CREATE_USER"):{
-        this.updateNewUser(action.user)
+        this.updateUser(action.user)
+        this.message = "User Created"
+        this.emit('message')
         break
       }
-      case("UPDATE_USERS"):{
-        this.updateUsers(action.users)
+      case("LOGIN_USER"):{
+        this.updateUser(action.user)
+        this.message = "User Logged In"
+        this.emit('message')
+        this.emit('login')
         break
       }
       default:{}
     }
   }
-}
 
-const ustore = new UserStore()
-Dispatcher.register(ustore.handleActions.bind(ustore))
-window.ustore = ustore
-export default ustore
+}
+const store = new UserStore()
+Dispatcher.register(store.handleActions.bind(store))
+window.user_store = store
+export default store

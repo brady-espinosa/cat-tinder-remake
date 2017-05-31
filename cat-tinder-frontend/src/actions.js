@@ -26,6 +26,10 @@ export function updateCats(){
 
 export function addCat(attributes){
   // set up the headers and request
+  let currentUser = userStore.getUser()
+  if (currentUser){
+    attributes.authToken = currentUser.authToken
+  }
   const params = {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
