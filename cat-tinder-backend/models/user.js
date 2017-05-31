@@ -45,6 +45,13 @@ module.exports = function(sequelize, DataTypes) {
         //compare encryptedUnverifiedPassword with password
         return encryptedUnverifiedPassword === this.get('encryptedPassword')
       },
+      setAuthToken(){
+        const token = uuid()
+        const expiration = new Date()
+        expiration.setMonth(expiration.getMonth() + 1)
+        this.setDataValue('authToken', token)
+        this.setDataValue('authTokenExpiration', expiration)
+      }
     },
     setterMethods:{
       // Virtual method for password
@@ -57,6 +64,12 @@ module.exports = function(sequelize, DataTypes) {
           const hash = this.encrypt(value)
           this.setDataValue('encryptedPassword', hash)
         }
+      }
+    },
+    hooks:{
+      // Adds a hook to generate the users token when user is created
+      beforeCreate: function(user, options){
+        user.setAuthToken()
       }
     }
   });

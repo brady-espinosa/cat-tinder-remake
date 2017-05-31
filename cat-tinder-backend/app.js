@@ -12,6 +12,26 @@ app.use(cors())
 app.use(express.static('public'))
 app.use(bodyParser.json())
 
+const authorization = function(request, response, next){
+  const token = request.query.authToken || request.body.authToken
+  if(token){
+    User.findOne({
+      where: {authToken: token}
+    }).then((user)=>{
+      if(user){
+        request.currentUser = user
+        next()
+      }else{
+        response.status(401)
+        response.json({message:'Authorization Token Invalid'})
+      }
+    })
+  }else{
+    response.status(401)
+    response.json({message: 'Authorization Token Required'})
+  }
+}
+
 app.get('/', function (request, response) {
   response.json({message: 'API Example App'})
 });
@@ -23,7 +43,7 @@ app.get('/cats', function(request, response){
   })
 })
 
-app.post('/create_cat', function(request, response){
+app.post('/create_cat', authorization, function(request, response){
   console.log(request.body)
   let catParams = request.body.cat
   Cat.create(catParams).then(function(cat){
