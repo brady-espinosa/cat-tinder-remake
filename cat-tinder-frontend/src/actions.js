@@ -1,4 +1,6 @@
 import Dispatcher from './Dispatcher'
+import userStore from './stores/UserStore'
+import catStore from './stores/CatStore'
 
 export function updateCats(){
   // make the api calls to get the list of cats
@@ -43,10 +45,8 @@ export function addCat(attributes){
       })
     }
   }).catch(function(error){
-    this.setState({
-      message: 'there was an error: ' + error.errors.join("\n")
+    catStore.updateMessage('there was an error:' + error)
     })
-  })
 }
 
 export function updateUsers(){
@@ -91,8 +91,6 @@ export function addUser(attributes){
       })
     }
   }).catch(function(error){
-    this.setState({
-      message: 'there was an error: ' + error.errors.join("\n")
+    userStore.updateMessage('there was an error:' + error)
     })
-  })
 }

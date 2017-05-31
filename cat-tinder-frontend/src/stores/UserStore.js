@@ -4,9 +4,8 @@ import Dispatcher from '../Dispatcher'
 class UserStore extends EventEmitter{
   constructor(){
     super()
-    this.users = [
-    ]
-    this.newUser = {}
+    this.users = []
+    this.newUser = null
     this.message = ""
   }
 
@@ -21,7 +20,7 @@ class UserStore extends EventEmitter{
   updateNewUser(attributes){
     this.newUser = attributes
     this.users.push(attributes)
-    this.updateMessage('User has been added')
+    this.updateUserMessage('User has been added')
     this.emit('change')
   }
 
@@ -35,7 +34,7 @@ class UserStore extends EventEmitter{
     return this.message
   }
 
-  updateMessage(newMessage){
+  updateUserMessage(newMessage){
     this.message = newMessage
     this.emit('message')
   }
@@ -43,11 +42,11 @@ class UserStore extends EventEmitter{
   handleActions(action){
     switch(action.type){
       case("CREATE_USER"):{
-        this.updateNewCat(action.cat)
+        this.updateNewUser(action.user)
         break
       }
       case("UPDATE_USERS"):{
-        this.updateCats(action.cats)
+        this.updateUsers(action.users)
         break
       }
       default:{}
@@ -56,6 +55,6 @@ class UserStore extends EventEmitter{
 }
 
 const ustore = new UserStore()
-Dispatcher.register(store.handleActions.bind(ustore))
+Dispatcher.register(ustore.handleActions.bind(ustore))
 window.ustore = ustore
 export default ustore

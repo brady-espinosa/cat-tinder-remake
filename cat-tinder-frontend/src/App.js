@@ -5,6 +5,7 @@ import CatAdd from './components/CatAdd'
 import UserAdd from './components/UserAdd'
 import CatIndex from './components/CatIndex'
 import catStore from './stores/CatStore'
+import userStore from './stores/UserStore'
 import {updateCats} from './actions'
 
 class App extends Component {
@@ -21,9 +22,15 @@ class App extends Component {
       message: catStore.getMessage()
     })
   }
+  updateUserMessage(){
+    this.setState({
+      message: userStore.getMessage()
+    })
+  }
 
   componentWillMount(){
     catStore.on('message', this.updateMessage.bind(this))
+    userStore.on('message', this.updateUserMessage.bind(this))
 
   }
 
