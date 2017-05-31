@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import {BrowserRouter as Router, Route} from 'react-router-dom'
 import CatAdd from './components/CatAdd'
+import UserAdd from './components/UserAdd'
 import CatIndex from './components/CatIndex'
 import catStore from './stores/CatStore'
 import {updateCats} from './actions'
@@ -23,6 +24,7 @@ class App extends Component {
 
   componentWillMount(){
     catStore.on('message', this.updateMessage.bind(this))
+
   }
 
   render() {
@@ -33,6 +35,7 @@ class App extends Component {
           <div className="App container">
             <Route exact path="/" component={CatIndex} />
             <Route exact path="/add" component={CatAdd} />
+            <Route exact path="/user_add" component={UserAdd} />
           </div>
         </Router>
       </div>
