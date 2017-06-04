@@ -2,13 +2,13 @@ var express = require('express');
 var bodyParser = require('body-parser')
 var app = express();
 var Cat = require('./models').Cat
-var cors = require('cors')
 var User = require('./models').User
 
-const corsOptions = {
-  origin: 'http://localhost:3000'
-}
-app.use(cors())
+var corsPrefetch = require('cors-prefetch-middleware').default
+var imagesUpload = require('images-upload-middleware').default
+
+app.use(corsPrefetch)
+
 app.use(express.static('public'))
 app.use(bodyParser.json())
 
@@ -55,6 +55,26 @@ app.post('/create_cat', authorization, function(request, response){
   })
 })
 
+app.post('/login_user', function(request, response){
+  // look up the user by username
+  User.findOne({where: {username: request.body.user.username}}).then(function(user){
+    if(user){
+      // check the password and return 200 & the user if valid
+      if(user.verifyPassword(request.body.user.password)){
+        response.status(200)
+        response.json({status: 'success', user: user})
+      } else {
+        response.status(401)
+        response.json({status: 'error', error: 'could not log in'})
+      }
+    } else {
+      response.status(401)
+      response.json({status: 'error', error: 'could not log in'})
+    }
+  })
+  // return 401 unauthorized if not valid
+})
+
 app.post('/create_user', function(request, response){
   console.log(request.body)
   let userParams = request.body.user
@@ -66,6 +86,12 @@ app.post('/create_user', function(request, response){
     response.json({status: 'error', error: error})
   })
 })
+
+
+app.post('/files', imagesUpload(
+    './public/files',
+    'http://localhost:4000/files'
+));
 
 app.listen(4000, function () {
  console.log('listening on port 4000!');

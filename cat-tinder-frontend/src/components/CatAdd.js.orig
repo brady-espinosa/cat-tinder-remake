@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom'
-import {addCat, loginOrRedirect} from '../actions'
-import userStore from '../stores/UserStore'
-import ImagesUploader from 'react-images-uploader';
-import 'react-images-uploader/styles.css';
+<<<<<<< HEAD
+import {updateCats} from '../actions'
+=======
+import {addCat} from '../actions'
+>>>>>>> store2
 
 class CatAdd extends Component {
   constructor(props){
@@ -32,31 +33,40 @@ class CatAdd extends Component {
 
   handleSubmit(e){
     e.preventDefault()
-    addCat(this.state)
-  }
-
-  componentWillMount(){
-    debugger
-    return loginOrRedirect(this.props)
-  }
-
-  componentWillUpdate(){
-    debugger
-    return loginOrRedirect(this.props)
-  }
-
-  handleImage(err, response){
-    if(err){
-      //TODO
-    } else {
-      let event = {
-        target: {
-          name: 'imageUrl',
-          value: response
-        }
-      }
-      this.handleChange(event)
+<<<<<<< HEAD
+    // set up the headers and request
+    const params = {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(this.state)
     }
+    // send state to the backend server
+    fetch("http://localhost:4000/create_cat", params).then(function(response){
+      // if post is successful update the message to be successful
+      // and update the state to equal what we get back from the server
+      if(response.status === 200){
+        response.json().then(function(body){
+          appScope.setState({
+            cat: body.cat,
+            message: 'successfully created cat profile'
+          })
+          updateCats()
+        })
+      } else {
+        this.setState({
+          message: 'error'
+        })
+        // else update the message to say there was a failure
+      }
+    }).catch(function(error){
+      this.setState({
+        message: 'there was an error: ' + error.errors.join("\n")
+      })
+    })
+
+=======
+    addCat(this.state.cat)
+>>>>>>> store2
   }
 
   render(){
@@ -68,13 +78,7 @@ class CatAdd extends Component {
             <Link to="/">Back</Link>
           </div>
         </div>
-        <ImagesUploader
-         url="http://localhost:4000/files"
-         optimisticPreviews
-         multiple={false}
-         onLoadEnd={this.handleImage.bind(this)}
-         label="Upload a picture"
-         />
+
         <form className='form' onSubmit={this.handleSubmit.bind(this)}>
           <div className='formGroup'>
             <label htmlFor='color'>Color</label>

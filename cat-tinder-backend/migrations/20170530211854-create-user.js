@@ -8,18 +8,31 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      userName: {
+      username: {
         type: Sequelize.STRING
       },
       email: {
         type: Sequelize.STRING
       },
-      firstName: {
+      first_name: {
         type: Sequelize.STRING
       },
-      lastName: {
+      last_name: {
         type: Sequelize.STRING
       },
+      city: {
+        type: Sequelize.STRING
+      },
+      state: {
+        type: Sequelize.STRING
+      },
+      encryptedPassword: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      authToken: Sequelize.STRING,
+      authTokenExpiration: Sequelize.DATE,
+      salt: Sequelize.STRING,
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
@@ -27,14 +40,7 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
-      },
-      encryptedPassword: {
-      type: Sequelize.STRING,
-      allowNull: false
-      },
-      authToken: Sequelize.STRING,
-      authTokenExpiration: Sequelize.DATE,
-      salt: Sequelize.STRING
+      }
     });
   },
   down: function(queryInterface, Sequelize) {

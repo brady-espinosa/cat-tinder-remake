@@ -5,6 +5,22 @@ class CatStore extends EventEmitter{
   constructor(){
     super()
     this.cats = [
+      {
+        color: 'blue',
+        breed: 'siamiese',
+        gender: 'Male',
+        habitat: 'Outdoor',
+        personality: 'smug',
+        age: '8'
+      },
+      {
+        color: 'green',
+        breed: 'minx',
+        gender: 'Male',
+        habitat: 'Outdoor',
+        personality: 'smart',
+        age: '4'
+      }
     ]
     this.newCat = {}
     this.message = ""

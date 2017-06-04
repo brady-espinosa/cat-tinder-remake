@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import {Link} from 'react-router-dom'
 
 class CatListing extends Component {
   render(){
     return(
       <div className="col-xs-3">
         <ul>
+          <li>
+            <img src={this.props.cat.imageUrl} className='cat-image'></img>
+          </li>
           <li>
             {this.props.cat.color}
           </li>

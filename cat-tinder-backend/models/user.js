@@ -1,24 +1,30 @@
-'use strict';
-const crypto = require('crypto')
 const uuid = require('uuid/v1')
-
+var crypto = require("crypto")
+'use strict';
 module.exports = function(sequelize, DataTypes) {
   var User = sequelize.define('User', {
-    userName: DataTypes.STRING,
+    username: DataTypes.STRING,
     email: DataTypes.STRING,
-    firstName: DataTypes.STRING,
-    lastName: DataTypes.STRING,
+    first_name: DataTypes.STRING,
+    last_name: DataTypes.STRING,
+    city: DataTypes.STRING,
+    state: DataTypes.STRING,
     encryptedPassword: {
-     type: DataTypes.STRING,
-     allowNull: false
+      type: DataTypes.STRING,
+      allowNull: false
     },
     authToken: DataTypes.STRING,
     authTokenExpiration: DataTypes.DATE,
     salt: DataTypes.STRING
   }, {
-    classMethods: {
-      associate: function(models) {
-        // associations can be defined here
+    setterMethods:{
+      password(value){
+       if(value){
+         const salt = uuid()
+         this.setDataValue('salt', salt)
+         const hash = this.encrypt(value)
+         this.setDataValue('encryptedPassword', hash)
+        }
       }
     },
     instanceMethods:{
@@ -35,9 +41,10 @@ module.exports = function(sequelize, DataTypes) {
       encrypt(value){
         const salt = this.get('salt')
         return crypto.createHmac('sha512', salt)
-        .update(value)
-        .digest('hex')
+          .update(value)
+          .digest('hex')
       },
+      // Checks to see if passed value matches encrypted password value from record
       verifyPassword(unverifiedPassword){
         //encrypt unverifiedPassword
         const encryptedUnverifiedPassword = this.encrypt(unverifiedPassword)
@@ -46,24 +53,16 @@ module.exports = function(sequelize, DataTypes) {
         return encryptedUnverifiedPassword === this.get('encryptedPassword')
       },
       setAuthToken(){
-        const token = uuid()
-        const expiration = new Date()
-        expiration.setMonth(expiration.getMonth() + 1)
-        this.setDataValue('authToken', token)
-        this.setDataValue('authTokenExpiration', expiration)
-      }
+         const token = uuid()
+         const expiration = new Date()
+         expiration.setMonth(expiration.getMonth() + 1)
+         this.setDataValue('authToken', token)
+         this.setDataValue('authTokenExpiration', expiration)
+       }
     },
-    setterMethods:{
-      // Virtual method for password
-      // Password does not exist in the database, but rather
-      // it is transformed to the 'encryptedPassword' value and stored as that
-      password(value){
-        if(value){
-          const salt = uuid()
-          this.setDataValue('salt', salt)
-          const hash = this.encrypt(value)
-          this.setDataValue('encryptedPassword', hash)
-        }
+    classMethods: {
+      associate: function(models) {
+        // associations can be defined here
       }
     },
     hooks:{
@@ -71,6 +70,7 @@ module.exports = function(sequelize, DataTypes) {
       beforeCreate: function(user, options){
         user.setAuthToken()
       }
+
     }
   });
   return User;
